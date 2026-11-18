@@ -7,10 +7,12 @@
 ## Windows 一键安装
 
 ```powershell
-irm https://raw.githubusercontent.com/BakaXXXXXL/xiaoye_cap-sync/main/install.ps1 | iex
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; irm https://bakandarkfsg.com/cpa-sync/install.ps1 | iex
 ```
 
 安装到 `%LOCALAPPDATA%\Programs\cpa-sync`，不需要管理员权限、Python 或 PyYAML。安装后如果找不到命令，请打开新终端。
+
+安装程序优先从 `bakandarkfsg.com` 下载并校验 Release，失败时自动尝试 GitHub。上面的命令同时兼容 Windows PowerShell 5.1 的 TLS 1.2 配置；PowerShell 7 也可以直接运行。
 
 ## 首次配置
 
@@ -80,7 +82,7 @@ cpa-sync sync opencode --prune
 卸载：
 
 ```powershell
-irm https://raw.githubusercontent.com/BakaXXXXXL/xiaoye_cap-sync/main/uninstall.ps1 | iex
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; irm https://bakandarkfsg.com/cpa-sync/uninstall.ps1 | iex
 ```
 
 ## 服务端接口
