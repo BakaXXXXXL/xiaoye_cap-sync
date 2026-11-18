@@ -1,0 +1,30 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install pyinstaller pyyaml
+      - run: python -m PyInstaller --onefile --name cpa-sync --clean cpa_sync.py
+      - shell: pwsh
+        run: |
+          .\dist\cpa-sync.exe --version
+          $hash = (Get-FileHash .\dist\cpa-sync.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          Set-Content -Path .\dist\cpa-sync-windows-x64.exe.sha256 -Value "$hash  cpa-sync-windows-x64.exe" -Encoding ascii
+          Copy-Item .\dist\cpa-sync.exe .\dist\cpa-sync-windows-x64.exe
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: gh release create "${{ github.ref_name }}" .\dist\cpa-sync-windows-x64.exe .\dist\cpa-sync-windows-x64.exe.sha256 --generate-notes
